@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clean PPB</title>
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant&family=Dancing+Script&display=swap');
+
+        h1 {
+            text-align: center;
+            font-family: "Cormorant";
+        }
+
+        h2 {
+            text-align: center;
+            font-family: 'Dancing Script';
+        }
+
+        p.label {
+            font-family: "Cormorant";
+        }
+
+        div.content {
+            display: flex;
+            justify-content: center;
+            margin-top: 54px;
+        }
+
+        div.field {
+            float: left;
+            padding: 50px;
+        }
+
+        .ql-editor {
+            width: 430px;
+            height: 320px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>PPB Cleaner</h1>
+    <h2>...denn niemand hat Zeit dafür</h2>
+
+    <div class="content">
+        <div class="field">
+            <p class="label">Copy-Paste hier rein:</p>
+            <div id="ReadPPB"></div>
+        </div>
+
+        <div class="field">
+            <p class="label">Ergebnis hier herauskopieren:</p>
+            <div id="WritePPB"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script type="text/javascript">
+        const       inEdit = new Quill("#ReadPPB", {theme: 'snow'});
+        const       outEdit = new Quill("#WritePPB", {theme: 'snow', readOnly: true});
+
+        inEdit.on('text-change', function (delta, oldDelta, src) {
+            if (src === "user") {
+                delta.forEach((op) => {
+                    if(typeof op.insert === 'string') {
+                        op.insert = op.insert.replaceAll(/(,\s,\s)|\n/ig, ', ');
+                    }
+                });
+                outEdit.setContents(delta);
+            }
+        });
+    </script>
+</body>
+</html>
